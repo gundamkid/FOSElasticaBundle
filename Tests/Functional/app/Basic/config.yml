@@ -1,20 +1,16 @@
 imports:
     - { resource: ./../config/config.yml }
 
-framework:
-    templating:
-        engines: ['twig']
-
 twig:
-    debug: %kernel.debug%
+    debug: "%kernel.debug%"
 
 fos_elastica:
     clients:
         default:
             connections:
                 - url: http://%fos_elastica.host%:%fos_elastica.port%
-                - host: %fos_elastica.host%
-                  port: %fos_elastica.port%
+                - host: "%fos_elastica.host%"
+                  port: "%fos_elastica.port%"
             connectionStrategy: RoundRobin
         second_server:
             connections:

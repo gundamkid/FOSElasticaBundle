@@ -25,24 +25,10 @@ namespace FOS\ElasticaBundle\Tests\Functional;
  */
 class SerializerTest extends WebTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->deleteTmpDir('Serializer');
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->deleteTmpDir('Serializer');
-    }
-
     public function testMappingIteratorToArrayField()
     {
-        $client = $this->createClient(['test_case' => 'Serializer']);
-        $persister = $client->getContainer()->get('fos_elastica.object_persister.index.type');
+        static::bootKernel(['test_case' => 'Serializer']);
+        $persister = static::$kernel->getContainer()->get('fos_elastica.object_persister.index.type');
 
         $object = new TypeObj();
         $object->id = 1;
@@ -60,8 +46,8 @@ class SerializerTest extends WebTestCase
      */
     public function testWithNullValues()
     {
-        $client = $this->createClient(['test_case' => 'Serializer']);
-        $container = $client->getContainer();
+        static::bootKernel(['test_case' => 'Serializer']);
+        $container = static::$kernel->getContainer();
 
         $disabledNullPersister = $container->get('fos_elastica.object_persister.index.type_serialize_null_disabled');
         $enabledNullPersister = $container->get('fos_elastica.object_persister.index.type_serialize_null_enabled');
@@ -81,13 +67,13 @@ class SerializerTest extends WebTestCase
         $enabledNullType = $container->get('fos_elastica.index.index.type_serialize_null_enabled');
         $documentData = $enabledNullType->getDocument(1)->getData();
         $this->assertArrayHasKey('field1', $documentData);
-        $this->assertSame($documentData['field1'], null);
+        $this->assertNull($documentData['field1']);
     }
 
     public function testUnmappedType()
     {
-        $client = $this->createClient(['test_case' => 'Serializer']);
-        $resetter = $client->getContainer()->get('fos_elastica.resetter');
+        static::bootKernel(['test_case' => 'Serializer']);
+        $resetter = static::$kernel->getContainer()->get('fos_elastica.resetter');
         $resetter->resetIndex('index');
     }
 }
